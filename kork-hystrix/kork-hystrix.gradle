@@ -4,8 +4,8 @@ dependencies {
 
   compile "org.springframework:spring-context:${spinnaker.version('spring')}"
   compile "org.springframework:spring-beans:${spinnaker.version('spring')}"
-  compile 'com.netflix.hystrix:hystrix-core:1.4.21'
-  compile 'com.netflix.hystrix:hystrix-javanica:1.4.21'
+  compile 'com.netflix.hystrix:hystrix-core:1.5.13'
+  compile 'com.netflix.hystrix:hystrix-javanica:1.5.13'
 
   spinnaker.group('spockBase')
 }
