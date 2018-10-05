@@ -1,0 +1,10 @@
+apply from: "$rootDir/gradle/kotlin.gradle"
+
+ext.resilience4jVersion="0.13.1"
+
+dependencies {
+  compile project(":kork-core")
+
+  compile "io.github.resilience4j:resilience4j-retry:$resilience4jVersion"
+  compile "io.github.resilience4j:resilience4j-ratelimiter:$resilience4jVersion"
+}

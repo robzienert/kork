@@ -1,0 +1,6 @@
+apply from: "$rootDir/gradle/kotlin.gradle"
+
+dependencies {
+  compile project(":kork-rpc")
+  compile spinnaker.dependency("retrofit")
+}
