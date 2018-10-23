@@ -28,7 +28,8 @@ include 'kork-core',
   'kork-aws',
   'kork-sql',
   'kork-sql-test',
-  'kork-test'
+  'kork-test',
+  'kork-scattergather'
 
 rootProject.name='kork'
 
