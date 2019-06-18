@@ -22,12 +22,13 @@ import java.time.Instant;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+import javax.annotation.Nonnull;
 
 /** Lock Manager with heartbeat support. */
 public interface RefreshableLockManager extends LockManager {
-  HeartbeatResponse heartbeat(final HeartbeatLockRequest heartbeatLockRequest);
+  HeartbeatResponse heartbeat(@Nonnull final HeartbeatLockRequest heartbeatLockRequest);
 
-  void queueHeartbeat(final HeartbeatLockRequest heartbeatLockRequest);
+  void queueHeartbeat(@Nonnull final HeartbeatLockRequest heartbeatLockRequest);
 
   class HeartbeatLockRequest {
     private final String requestId;

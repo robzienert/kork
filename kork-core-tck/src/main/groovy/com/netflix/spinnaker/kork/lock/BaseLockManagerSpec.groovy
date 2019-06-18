@@ -130,7 +130,7 @@ abstract class BaseLockManagerSpec<T extends LockManager> extends Specification 
     def response = lockManager.tryReleaseLock(lock, true)
 
     then:
-    response == LockReleaseStatus.SUCCESS.toString()
+    response == LockReleaseStatus.SUCCESS
 
     ensureLockReleased(lockOptions.lockName)
   }
@@ -179,7 +179,7 @@ abstract class BaseLockManagerSpec<T extends LockManager> extends Specification 
     def response = lockManager.tryReleaseLock(lock, true)
 
     then:
-    response == LockReleaseStatus.SUCCESS.toString()
+    response == LockReleaseStatus.SUCCESS
 
     ensureLockTtlGreaterThan(lockOptions.lockName, 25)
 
@@ -187,7 +187,7 @@ abstract class BaseLockManagerSpec<T extends LockManager> extends Specification 
     response = lockManager.tryReleaseLock(lock, false)
 
     then:
-    response == LockReleaseStatus.SUCCESS.toString()
+    response == LockReleaseStatus.SUCCESS
 
     ensureLockTtlLessThanOrEqualTo(lockOptions.lockName, 25)
   }

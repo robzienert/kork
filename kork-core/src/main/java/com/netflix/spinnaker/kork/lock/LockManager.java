@@ -19,10 +19,11 @@ package com.netflix.spinnaker.kork.lock;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.time.Duration;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.Callable;
 import javax.annotation.Nonnull;
 
@@ -47,17 +48,6 @@ public interface LockManager {
 
   // VisibleForTesting
   Lock tryCreateLock(final LockOptions lockOptions);
-
-  String NAME_FALLBACK = UUID.randomUUID().toString();
-
-  /** Used only if an ownerName is not provided in the constructor. */
-  default String getOwnerName() {
-    try {
-      return InetAddress.getLocalHost().getHostName();
-    } catch (UnknownHostException e) {
-      return NAME_FALLBACK;
-    }
-  }
 
   default String lockKey(String name) {
     return String.format("{korkLock:%s}", name.toLowerCase());
@@ -111,10 +101,12 @@ public interface LockManager {
     EXPIRED
   }
 
-  interface LockReleaseStatus {
-    String SUCCESS = "SUCCESS";
-    String SUCCESS_GONE = "SUCCESS_GONE"; // lock no longer exists
-    String FAILED_NOT_OWNER = "FAILED_NOT_OWNER"; // found lock but belongs to someone else
+  enum LockReleaseStatus {
+    SUCCESS,
+    /** Lock no longer exists */
+    SUCCESS_GONE,
+    /** Found lock but belongs to someone else */
+    FAILED_NOT_OWNER
   }
 
   @JsonInclude(JsonInclude.Include.NON_NULL)
