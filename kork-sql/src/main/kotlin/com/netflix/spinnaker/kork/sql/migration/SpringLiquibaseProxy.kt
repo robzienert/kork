@@ -34,7 +34,10 @@ import javax.sql.DataSource
  */
 class SpringLiquibaseProxy(
   private val sqlMigrationProperties: SqlMigrationProperties,
-  private val korkAdditionalChangelogs: List<String> = listOf("db/healthcheck.yml")
+  private val korkAdditionalChangelogs: List<String> = listOf(
+    "db/healthcheck.yml",
+    "db/lock-manager.yml"
+  )
 ) : SpringLiquibase() {
 
   init {

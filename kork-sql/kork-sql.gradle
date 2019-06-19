@@ -6,6 +6,7 @@ dependencies {
 
   api project(":kork-core")
   api project(":kork-security")
+  api project(":kork-exceptions")
   api "org.springframework:spring-jdbc"
   api "org.springframework:spring-tx"
   api("org.jooq:jooq:3.9.6"){

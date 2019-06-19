@@ -16,10 +16,12 @@
 package com.netflix.spinnaker.kork.sql.config
 
 import com.netflix.spectator.api.Registry
+import com.netflix.spinnaker.kork.lock.RefreshableLockManager
 import com.netflix.spinnaker.kork.sql.JooqSqlCommentAppender
 import com.netflix.spinnaker.kork.sql.JooqToSpringExceptionTransformer
 import com.netflix.spinnaker.kork.sql.health.SqlHealthIndicator
 import com.netflix.spinnaker.kork.sql.health.SqlHealthProvider
+import com.netflix.spinnaker.kork.sql.lock.SqlLockManager
 import com.netflix.spinnaker.kork.sql.migration.SpringLiquibaseProxy
 import com.netflix.spinnaker.kork.sql.routing.NamedDataSourceRouter
 import com.netflix.spinnaker.kork.sql.routing.StaticDataSourceLookup
@@ -49,6 +51,7 @@ import sun.net.InetAddressCachePolicy
 import java.lang.reflect.Field
 import java.security.Security
 import java.sql.Connection
+import java.time.Clock
 import javax.sql.DataSource
 
 @Configuration
@@ -162,7 +165,7 @@ class DefaultSqlConfiguration {
     }
 
   @Bean(destroyMethod = "close")
-  @ConditionalOnMissingBean(DSLContext::class)
+  @ConditionalOnMissingBeawn(DSLContext::class)
   fun jooq(jooqConfiguration: DefaultConfiguration): DSLContext =
     DefaultDSLContext(jooqConfiguration)
 
@@ -180,6 +183,16 @@ class DefaultSqlConfiguration {
     sqlProperties: SqlProperties
   ) =
     SqlHealthIndicator(sqlHealthProvider, sqlProperties.getDefaultConnectionPoolProperties().dialect)
+
+  @Bean
+  @ConditionalOnProperty("sql.lock-manager.enabled", matchIfMissing = true)
+  fun lockManager(
+    jooq: DSLContext,
+    registry: Registry,
+    clock: Clock,
+    sqlLockManagerProperties: SqlLockManagerProperties
+  ): RefreshableLockManager =
+    SqlLockManager(jooq, registry)
 }
 
 /**

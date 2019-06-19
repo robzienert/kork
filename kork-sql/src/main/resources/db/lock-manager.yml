@@ -1,0 +1,73 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-lock-table
+      author: robzienert
+      changes:
+        - createTable: kork_locks
+          columns:
+            - column:
+                name: name
+                type: varchar(255)
+                constraints:
+                  primaryKey: true
+                  nullable: false
+            - column:
+                name: owner_name
+                type: varchar(255)
+                constraints:
+                  nullable: false
+            - column:
+                name: version
+                type: bigint
+                constraints:
+                  nullable: false
+            - column:
+                name: lease_duration_ms
+                type: bigint
+                constraints:
+                  nullable: false
+            - column:
+                name: success_interval_ms
+                type: bigint
+                constraints:
+                  nullable: false
+            - column:
+                name: failure_interval_ms
+                type: bigint
+                constraints:
+                  nullable: false
+            - column:
+                name: owner_system_timestamp
+                type: bigint
+                constraints:
+                  nullable: false
+            - column:
+                name: attributes
+                type: text
+                constraints:
+                  nullable: true
+        - modifySql:
+            dbms: mysql
+            append:
+              value: " engine innodb"
+        - createIndex:
+            indexName: lock_name_owner_name_idx
+            tableName: kork_locks
+            columns:
+              - column:
+                  name: name
+              - column:
+                  name: owner_name
+        - createIndex:
+            indexName: lock_name_owner_name_version_idx
+            tableName: kork_locks
+            columns:
+              - column:
+                  name: name
+              - column:
+                  name: owner_name
+              - column:
+                  name: version
+      rollback:
+        - dropTable:
+            tableName: kork_locks

@@ -229,7 +229,7 @@ public class RedisLockManager extends AbstractRefreshableLockManager {
             + "if payload then"
             + "  local lock = cjson.decode(payload)"
             + "  if lock['ownerName'] == ARGV[1] then"
-            + "    return redis.call('GET', KEYS[1])"
+            + "    return payload"
             + "  end "
             + "end";
 

@@ -24,7 +24,9 @@ data class SqlProperties(
   var retries: SqlRetryProperties = SqlRetryProperties(),
 
   @Deprecated("use named connection pools instead")
-  var connectionPool: ConnectionPoolProperties? = null
+  var connectionPool: ConnectionPoolProperties? = null,
+
+  var lockManager: SqlLockManagerProperties = SqlLockManagerProperties()
 ) {
 
   fun getDefaultConnectionPoolProperties(): ConnectionPoolProperties {
