@@ -48,7 +48,7 @@ public class ManifestVersionResolver implements VersionResolver {
   }
 
   /** Constructor is only available for testing. */
-  private ManifestVersionResolver(String group) {
+  ManifestVersionResolver(String group) {
     this.group = group;
   }
 
