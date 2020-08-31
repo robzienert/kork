@@ -1,0 +1,67 @@
+@startuml
+box "Spinnaker Service" #LightBlue
+participant Service
+end box
+participant "PluginFrameworkInitializer" as PFI
+box "PF4J" #ffdddc
+participant "PluginManager /\n UpdateManager" as PluginManager
+end box
+participant "SpringPluginFactory" as SPF
+participant "PluginContainer" as PC
+participant "PluginApplicationContext" as PAC
+participant "SpringPluginInitializer" as SPI
+participant "ExtensionPromotion\nBeanPostProcessor" as EPBPP
+
+Service -> PFI:\
+ [called by Spring]\n\
+ postProcessBeanDefinitionRegistry()
+
+PFI -> "Plugin Manager /\n Update Manager" as PluginManager : initialize()
+
+PluginManager -> PluginManager : loadPlugins()
+note right
+  Process of loading plugins not included:
+  Sourcing what plugins are enabled,
+  downloading (if unavailable on filesystem),
+  initializing metadata, and creating
+  ClassLoaders are all done here.
+end note
+
+PFI -> PluginManager            : startPlugins()
+PluginManager -> PluginManager  : startPlugins()
+
+loop 1..* plugins
+  PluginManager -> SPF : create plugin
+  alt Native Plugin
+    SPF -> PC            : create PluginContainer
+  else PrivilegedSpringPlugin
+    SPF -X SPF :
+    note right
+      PrivilegedSpringPlugin is not documented as
+      part of this diagram, but it shares a lot in
+      common with the native Plugin sequence.
+    end note
+  end
+
+  PC -> PAC     : create plugin's ApplicationContext
+  PFI -> PC     : initialize()
+  PC -> PC      : registerInitializer()
+  PC -> SPI     : create SpringPluginInitializer
+  PC -> Service : register initializer
+
+  SPI -> SPI   : setApplicationContext()
+  SPI -> EPBPP : create ExtensionPromotion\nBeanPostProcessor
+  SPI -> PAC   : register Extension
+  SPI -> PAC   : configure ClassLoader
+  SPI -> SPI   : Scan for plugin components
+  SPI -> PAC   : refresh()
+
+  PAC -> PAC #ddd         : initialize components
+
+  loop 1..* components
+    PAC -> EPBPP            : postProcessAfterInitialization()
+    EPBPP -> BeanPromoter   : << has @Extension annotation >>
+    BeanPromoter -> Service : promote component\nto service ApplicationContext
+  end loop
+end loop
+@enduml

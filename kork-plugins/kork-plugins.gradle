@@ -1,5 +1,5 @@
 apply plugin: "java-library"
-apply plugin: "groovy"
+apply plugin: "swehacker.plantuml"
 apply from: "$rootDir/gradle/kotlin.gradle"
 apply from: "$rootDir/gradle/lombok.gradle"
 
@@ -46,4 +46,10 @@ dependencies {
 
 compileJava {
   options.compilerArgs << '-parameters'
+}
+
+generateDomainModel {
+  classpath = project.configurations.runtime.files
+  outputFile = project.rootDir
+  packageStructure = ''
 }
